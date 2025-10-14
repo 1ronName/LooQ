@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="vcontainer">
+    <h1 id="title">Task Manager</h1>
+  
+    <div class="hcontainer">
+      
+      <div id="function" class="vcontainer">
+        <button id="addTaskButton">Add Task</button>
+        <button id="addRecordButton">Add Record</button>
+      </div>
+    
+      <div id="show">
+        <div id="section1">
+          <h2>已有任务</h2>
+          <ul id="taskList"></ul>
+        </div>
+        <div id="section2">
+          <h2>最近练习记录</h2>
+          <ul id="recordList"></ul>
+        </div>
+      </div>
+    
+      <div id="chart">
+        <h2>统计表</h2>
+      </div>
+    
+    </div>
+
+  </div>
+
+  <script src="renderer.js"></script>
+
+</body>
+</html>
