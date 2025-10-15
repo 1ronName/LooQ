@@ -8,31 +8,62 @@
 </head>
 
 <body>
-  <div class="vcontainer">
-    <h1 id="title">Task Manager</h1>
-  
-    <div class="hcontainer">
+
+  <div id="top" class="title-bar">
+    <h2 class="unselectable">LooQ-打卡与提醒</h2>
+    <div id="control">
+      <button class="unselectable">设置</button>
+      <button id="close-button" class="unselectable">退出</button>
+    </div>
+  </div>
+
+  <div class="hcontainer full-flex">
+    <div class="column vcontainer" id="left-column">
       
-      <div id="function" class="vcontainer">
-        <button id="addTaskButton">Add Task</button>
-        <button id="addRecordButton">Add Record</button>
-      </div>
-    
-      <div id="show">
-        <div id="section1">
-          <h2>已有任务</h2>
-          <ul id="taskList"></ul>
-        </div>
-        <div id="section2">
-          <h2>最近练习记录</h2>
-          <ul id="recordList"></ul>
+      <div class="full-flex">
+      <div class="title-bar-small">
+        <h2>练习记录</h2>
+        <div>
+          <button>展开</button>
+          <button>新增</button>
         </div>
       </div>
-    
-      <div id="chart">
-        <h2>统计表</h2>
+
+      <div>
+        <p>练习记录将会显示在这里</p>
       </div>
-    
+      </div>
+
+      <div class="full-flex">
+      <div class="title-bar-small">
+        <h2>活跃图</h2>
+        <div>
+          <button>展开</button>
+          <button>新增</button>
+        </div>
+      </div>
+
+      <div>
+        <p>活跃图将会显示在这里</p>
+      </div>
+      </div>
+
+    </div>
+
+    <div class="column" id="right-column">
+      <div>
+      <div class="title-bar-small">
+        <h2>待办</h2>
+        <div>
+          <button>展开</button>
+          <button>新增</button>
+        </div>
+      </div>
+
+      <div>
+        <p>待办事项将会显示在这里</p>
+      </div>
+      </div>
     </div>
 
   </div>
