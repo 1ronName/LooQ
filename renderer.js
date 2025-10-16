@@ -16,7 +16,7 @@ ipcRenderer.on('receive-records', (event, records) => {
   // 遍历记录数组并创建列表项
   records.forEach(record => {
     const listItem = document.createElement('li');
-    listItem.textContent = `内容: ${record.content}, 日期: ${record.date}, 目标: ${record.goal}`;
+    listItem.textContent = `${record.date}--${record.goal}--${record.content}`;
     recordList.appendChild(listItem);
   });
 });

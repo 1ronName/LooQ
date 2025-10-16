@@ -1,12 +1,12 @@
 [
   {
     "goal": "goal2",
-    "content": "2",
+    "content": "内容描述1",
     "date": "2025-10-16"
   },
   {
     "goal": "goal1",
-    "content": "1",
+    "content": "这里也是内容描述啊",
     "date": "2025-10-16"
   }
 ]
