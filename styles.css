@@ -9,23 +9,38 @@ body {
 }
 
 .title-bar {
-  max-height: 60px;
-  background-color: #007BFF;
+  max-height: 40px;
+  background-color: #2d90fa;
   color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 10px; /* 上下内边距为10px，左右内边距为20px */
+  padding: 5px 5px; /* 上下内边距为5px，左右内边距为5px */
 }
 
 .title-bar-small {
   max-height: 40px;
-  background-color: #7ca0c7;
-  color: #fff;
+  background-color: #ffffff00;
+  color: #1d1d1d;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 10px; /* 上下内边距为10px，左右内边距为20px */
+  padding: 0px 5px; /* 上下内边距为10px，左右内边距为20px */
+}
+
+.divider {
+  border-bottom: 2px solid #007BFF;
+  margin: 5px 0;
+}
+
+.title-bar-small div button{
+  background-color: #ffffff00;
+  color: #1d1d1d;
+}
+
+.title-bar-small div button:hover {
+  background-color: #cce2facb;
+  color: #1d1d1d;
 }
 
 #control {
@@ -70,7 +85,7 @@ button {
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
-  background-color: #007BFF;
+  background-color: #007bff00;
   color: #fff;
   border: none;
   border-radius: 5px;
