@@ -3,17 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>添加练习记录</title>
+  <title>添加记录</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>添加练习记录</h1>
+  <div id="top" class="title-bar">
+    <h2 class="unselectable">添加记录</h2>
+  </div>
   <form id="addRecordForm">
-    <label for="content">练习内容:</label>
+    <div class="full-flex">
+    <label for="goal">所属目标:</label>
+    <select id="goal" name="goal" required>
+      <option value="">无</option>
+      <option value="goal1">目标1</option>
+      <option value="goal2">目标2</option>
+      <option value="goal3">目标3</option>
+      <option value="new">新建</option>
+    </select><br><br>
+    </div>
+
+    <div class="full-flex">
+    <label for="content">内容:</label>
     <input type="text" id="content" name="content" required><br><br>
-    <label for="duration">练习时长:</label>
-    <input type="text" id="duration" name="duration" required><br><br>
-    <button type="submit">保存</button>
+    </div>
+    <div class="full-flex">
+    <label for="date">日期:</label>
+    <input type="date" id="date" name="date" required><br><br>
+    </div>
+    
+    <div class="buttons-box">
+      <button type="button" id="cancelButton">取消</button>
+      <button type="submit">确认</button>
+    </div>
   </form>
+  
   <script src="add_record.js"></script>
 </body>
 </html>

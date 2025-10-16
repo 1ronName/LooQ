@@ -1,22 +1,12 @@
 [
   {
-    "date": "2025-10-14T13:38:13.263Z",
-    "content": "awa",
-    "duration": "114514"
+    "goal": "goal2",
+    "content": "2",
+    "date": "2025-10-16"
   },
   {
-    "date": "2025-10-15T05:03:27.490Z",
-    "content": "111",
-    "duration": "111"
-  },
-  {
-    "date": "2025-10-15T05:03:31.872Z",
-    "content": "111",
-    "duration": "223"
-  },
-  {
-    "date": "2025-10-15T05:11:47.129Z",
-    "content": "aaa",
-    "duration": "aaa"
+    "goal": "goal1",
+    "content": "1",
+    "date": "2025-10-16"
   }
 ]

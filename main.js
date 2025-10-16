@@ -5,7 +5,49 @@ const { log } = require('console');
 const dataFilePath = path.join(__dirname, 'data', 'records.json');
 
 let mainWindow;
+let addRecordWindow;
 let tray;
+
+// 读取记录数据并发送到渲染进程
+function sendRecordsToRenderer() {
+  let records = [];
+  if (fs.existsSync(dataFilePath)) {
+    try {
+      const recordsData = fs.readFileSync(dataFilePath, 'utf8');
+      records = JSON.parse(recordsData);
+    } catch (error) {
+      console.error('解析记录文件时出错:', error);
+    }
+  }
+  mainWindow.webContents.send('receive-records', records);
+}
+
+function saveRecord(record) {
+  // 确保 data 目录存在
+  const dataDir = path.dirname(dataFilePath);
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+
+  // 读取现有记录
+  let records = [];
+  if (fs.existsSync(dataFilePath)) {
+    try {
+      const recordsData = fs.readFileSync(dataFilePath, 'utf8');
+      records = JSON.parse(recordsData);
+    } catch (error) {
+      console.error('解析记录文件时出错:', error);
+      // 如果文件内容不是有效的 JSON，记录为空数组
+      records = [];
+    }
+  }
+
+  // 添加新记录
+  records.push(record);
+
+  // 保存记录
+  fs.writeFileSync(dataFilePath, JSON.stringify(records, null, 2), 'utf8');
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -73,6 +115,11 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+
+  // 程序启动时读取记录数据
+  mainWindow.webContents.on('did-finish-load', () => {
+  sendRecordsToRenderer();
+});
 }
 
 function createAddRecordWindow() {
@@ -81,6 +128,7 @@ function createAddRecordWindow() {
     height: 300,
     parent: mainWindow,
     modal: true,
+    frame: false,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -88,7 +136,6 @@ function createAddRecordWindow() {
   });
 
   addRecordWindow.loadFile('add_record.html');
-
 }
 
 function createTray() {
@@ -119,6 +166,7 @@ app.whenReady().then(() => {
   createWindow();
   // createTray();
   // 功能做完前先不管托盘
+  
 });
 
 app.on('window-all-closed', () => {
@@ -133,8 +181,23 @@ app.on('activate', () => {
   }
 });
 
+ipcMain.on('request-records', () => {
+  sendRecordsToRenderer();
+});
+
+ipcMain.on('save-record', (event, data) => {
+  saveRecord(data);
+  sendRecordsToRenderer(); 
+});
+
 ipcMain.on('open-add-record-window', () => {
   createAddRecordWindow();
+});
+
+ipcMain.on('close-add-record-window', () => {
+  if (addRecordWindow) {
+    addRecordWindow.close();
+  }
 });
 
 ipcMain.on('add-record', (event, record) => {
@@ -151,6 +214,5 @@ ipcMain.on('move-window', (event, dx, dy) => {
 });
 
 ipcMain.on('close-window', () => {
-  console.log('Closed.');
   mainWindow.close();
 });

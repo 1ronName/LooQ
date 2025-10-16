@@ -43,15 +43,41 @@ body {
   color: #1d1d1d;
 }
 
+#addRecordForm {
+  flex: 1;
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
 #control {
   display: flex;
   flex-direction: row;
 }
 
+.buttons-box {
+  display: flex;
+  flex: 1;
+  max-height: 40px;
+  background-color: #f0f0f0;
+}
+
+.buttons-box button {
+  flex: 1;
+  background-color: #ffffff00;
+  color: #1d1d1d;
+}
+
+.buttons-box button:hover {
+  flex: 1;
+  background-color: #cce2facb;
+  color: #1d1d1d;
+}
+
 .hcontainer {
   display: flex;
   flex: 1;
-  background-color: #ff00d4;
+  background-color: #b9b9b9;
 }
 
 .vcontainer {

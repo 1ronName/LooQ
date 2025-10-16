@@ -2,8 +2,30 @@ const { ipcRenderer } = require('electron');
 const path = require('path');
 const recordsPath = path.join(__dirname, '..', 'data', 'records.json');
 
-document
-.getElementById('close-button').addEventListener('click', () => {
+// 获取记录列表元素
+const recordList = document.getElementById('recordList');
+
+// 请求主进程发送记录数据
+ipcRenderer.send('request-records');
+
+// 监听主进程发送的记录数据
+ipcRenderer.on('receive-records', (event, records) => {
+  // 清空现有列表
+  recordList.innerHTML = '';
+
+  // 遍历记录数组并创建列表项
+  records.forEach(record => {
+    const listItem = document.createElement('li');
+    listItem.textContent = `内容: ${record.content}, 日期: ${record.date}, 目标: ${record.goal}`;
+    recordList.appendChild(listItem);
+  });
+});
+
+document.getElementById('addRecordButton').addEventListener('click', () => {
+  ipcRenderer.send('open-add-record-window');
+});
+
+document.getElementById('close-button').addEventListener('click', () => {
   ipcRenderer.send('close-window');
 });
 
