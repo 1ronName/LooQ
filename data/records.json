@@ -1,12 +1,33 @@
-[
-  {
-    "goal": "goal2",
-    "content": "内容描述1",
-    "date": "2025-10-16"
-  },
-  {
-    "goal": "goal1",
-    "content": "这里也是内容描述啊",
-    "date": "2025-10-16"
-  }
-]
+{
+  "records": [
+    {
+      "goal": "new",
+      "content": "继续凑数",
+      "date": "2025-10-17"
+    },
+    {
+      "goal": "goal1",
+      "content": "aaa",
+      "date": "2025-10-03"
+    },
+    {
+      "goal": "goal2",
+      "content": "1",
+      "date": "2025-10-17"
+    }
+  ],
+  "todos": [
+    {
+      "content": "待办1",
+      "date": "2025-10-17"
+    },
+    {
+      "content": "待办2",
+      "date": "2025-10-17"
+    },
+    {
+      "content": "某比赛开题",
+      "date": "2025-10-20"
+    }
+  ]
+}

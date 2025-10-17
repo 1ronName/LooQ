@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>修改记录</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div id="top" class="title-bar">
+    <h2 class="unselectable">修改记录</h2>
+  </div>
+  <form id="editRecordForm">
+    <div class="full-flex">
+    <label for="goal">所属目标:</label>
+    <select id="goal" name="goal" required>
+      <option value="">无</option>
+      <option value="goal1">目标1</option>
+      <option value="goal2">目标2</option>
+      <option value="goal3">目标3</option>
+      <option value="new">新建</option>
+    </select><br><br>
+    </div>
+
+    <div class="full-flex">
+    <label for="content">内容:</label>
+    <input type="text" id="content" name="content" required><br><br>
+    </div>
+    <div class="full-flex">
+    <label for="date">日期:</label>
+    <input type="date" id="date" name="date" required><br><br>
+    </div>
+    
+    <div class="buttons-box">
+      <button type="button" id="cancelButton">取消</button>
+      <button type="submit">确认</button>
+    </div>
+  </form>
+  
+  <script src="edit_record.js"></script>
+</body>
+</html>

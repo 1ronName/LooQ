@@ -4,9 +4,53 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  min-width: 650px;
+  
   width: 100%;
   height: 100%;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+}
+
+.button-container {
+  display: none;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.edit-button, .delete-button {
+  background-color: #2d90fa;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.delete-button {
+  background-color: red;
+}
+
+li:hover .button-container {
+  display: flex;
+}
+
+/*主窗口*/
+#mainbody {
+  min-width: 650px;
 }
 
 .title-bar {
@@ -44,7 +88,14 @@ body {
   color: #1d1d1d;
 }
 
-#addRecordForm {
+#addRecordForm, #editRecordForm {
+  flex: 1;
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+#addTodoForm, #editTodoForm {
   flex: 1;
   padding: 5px 10px;
   display: flex;

@@ -3,25 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>添加记录</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>添加待办</title>
+  <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
   <div id="top" class="title-bar">
-    <h2 class="unselectable">添加记录</h2>
+    <h2 class="unselectable">添加待办</h2>
   </div>
-  <form id="addRecordForm">
-    <div class="full-flex">
-    <label for="goal">所属目标:</label>
-    <select id="goal" name="goal" required>
-      <option value="">无</option>
-      <option value="goal1">目标1</option>
-      <option value="goal2">目标2</option>
-      <option value="goal3">目标3</option>
-      <option value="new">新建</option>
-    </select><br><br>
-    </div>
-
+  <form id="addTodoForm">
     <div class="full-flex">
     <label for="content">内容:</label>
     <input type="text" id="content" name="content" required><br><br>
@@ -37,6 +26,6 @@
     </div>
   </form>
   
-  <script src="add_record.js"></script>
+  <script src="add_todo.js"></script>
 </body>
 </html>

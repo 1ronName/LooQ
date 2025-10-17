@@ -6,47 +6,100 @@ const dataFilePath = path.join(__dirname, 'data', 'records.json');
 
 let mainWindow;
 let addRecordWindow;
+let addTodoWindow;
+let editRecordWindow;
+let editTodoWindow;
 let tray;
 
-// 读取记录数据并发送到渲染进程
-function sendRecordsToRenderer() {
-  let records = [];
+function updateData(type, index, item) {
+  console.log('尝试更新数据', type);
+  console.log('index:', index);
+  let data = { records: [], todos: [] };
   if (fs.existsSync(dataFilePath)) {
     try {
-      const recordsData = fs.readFileSync(dataFilePath, 'utf8');
-      records = JSON.parse(recordsData);
+      const dataContent = fs.readFileSync(dataFilePath, 'utf8');
+      data = JSON.parse(dataContent);
     } catch (error) {
-      console.error('解析记录文件时出错:', error);
+      console.error('解析数据文件时出错:', error);
+      return; // 如果解析失败，直接返回
     }
   }
-  mainWindow.webContents.send('receive-records', records);
+
+  if (type === 'record' && index >= 0 && index < data.records.length) {
+    data.records[index] = item;
+  } else if (type === 'todo' && index >= 0 && index < data.todos.length) {
+    data.todos[index] = item;
+  } else {
+    console.error('无效的类型或索引:');
+    return; // 如果索引无效，直接返回
+  }
+
+  try {
+    fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf8');
+    console.log('数据更新成功');
+  } catch (error) {
+    console.error('写入数据文件时出错:', error);
+  }
 }
 
-function saveRecord(record) {
-  // 确保 data 目录存在
+// 读取记录数据并发送到渲染进程
+function sendDataToRenderer() {
+  let data = { records: [], todos: [] };
+  if (fs.existsSync(dataFilePath)) {
+    try {
+      const dataContent = fs.readFileSync(dataFilePath, 'utf8');
+      data = JSON.parse(dataContent);
+    } catch (error) {
+      console.error('解析数据文件时出错:', error);
+    }
+  }
+  mainWindow.webContents.send('receive-data', data);
+}
+
+function saveData({ record, todo }) {
   const dataDir = path.dirname(dataFilePath);
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
   }
 
-  // 读取现有记录
-  let records = [];
+  let data = { records: [], todos: [] };
   if (fs.existsSync(dataFilePath)) {
     try {
-      const recordsData = fs.readFileSync(dataFilePath, 'utf8');
-      records = JSON.parse(recordsData);
+      const dataContent = fs.readFileSync(dataFilePath, 'utf8');
+      data = JSON.parse(dataContent);
     } catch (error) {
-      console.error('解析记录文件时出错:', error);
-      // 如果文件内容不是有效的 JSON，记录为空数组
-      records = [];
+      console.error('解析数据文件时出错:', error);
     }
   }
 
-  // 添加新记录
-  records.push(record);
+  if (record) {
+    data.records.push(record);
+  }
+  if (todo) {
+    data.todos.push(todo);
+  }
 
-  // 保存记录
-  fs.writeFileSync(dataFilePath, JSON.stringify(records, null, 2), 'utf8');
+  fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf8');
+}
+
+function deleteData(type, index) {
+  let data = { records: [], todos: [] };
+  if (fs.existsSync(dataFilePath)) {
+    try {
+      const dataContent = fs.readFileSync(dataFilePath, 'utf8');
+      data = JSON.parse(dataContent);
+    } catch (error) {
+      console.error('解析数据文件时出错:', error);
+    }
+  }
+
+  if (type === 'record' && index >= 0 && index < data.records.length) {
+    data.records.splice(index, 1);
+  } else if (type === 'todo' && index >= 0 && index < data.todos.length) {
+    data.todos.splice(index, 1);
+  }
+
+  fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf8');
 }
 
 function createWindow() {
@@ -116,10 +169,10 @@ function createWindow() {
     mainWindow = null;
   });
 
-  // 程序启动时读取记录数据
+  // 程序启动时读取数据
   mainWindow.webContents.on('did-finish-load', () => {
-  sendRecordsToRenderer();
-});
+    sendDataToRenderer();
+  });
 }
 
 function createAddRecordWindow() {
@@ -135,7 +188,23 @@ function createAddRecordWindow() {
     },
   });
 
-  addRecordWindow.loadFile('add_record.html');
+  addRecordWindow.loadFile(path.join(__dirname, 'SubWindows', 'add_record.html'));
+}
+
+function createAddTodoWindow() {
+  addTodoWindow = new BrowserWindow({
+    width: 400,
+    height: 300,
+    parent: mainWindow,
+    modal: true,
+    frame: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  });
+
+  addTodoWindow.loadFile(path.join(__dirname, 'SubWindows', 'add_todo.html'));
 }
 
 function createTray() {
@@ -164,7 +233,7 @@ function createTray() {
 
 app.whenReady().then(() => {
   createWindow();
-  // createTray();
+  createTray();
   // 功能做完前先不管托盘
   
 });
@@ -181,13 +250,130 @@ app.on('activate', () => {
   }
 });
 
-ipcMain.on('request-records', () => {
-  sendRecordsToRenderer();
+ipcMain.on('update-record', (event, { index, record }) => {
+  // console.log('index:', index);
+  updateData('record', index, record);
+  mainWindow.webContents.send('item-deleted'); // 通知渲染进程数据已更新
 });
 
-ipcMain.on('save-record', (event, data) => {
-  saveRecord(data);
-  sendRecordsToRenderer(); 
+ipcMain.on('update-todo', (event, { index, todo }) => {
+  updateData('todo', index, todo);
+  mainWindow.webContents.send('item-deleted'); // 通知渲染进程数据已更新
+});
+
+ipcMain.on('open-record-edit-window', (event, { index, record }) => {
+  // console.log('index:', index);
+  openRecordEditWindow(index, record);
+});
+
+ipcMain.on('open-todo-edit-window', (event, { index, todo }) => {
+  openTodoEditWindow(index, todo);
+});
+
+// ipcMain.on('say-index')
+
+function openRecordEditWindow(index, record) {
+  if (!editRecordWindow) {
+    editRecordWindow = new BrowserWindow({
+      parent: mainWindow,
+      modal: true,
+      show: false,
+      frame: false,
+      width: 400,
+      height: 300,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+      },
+    });
+
+    editRecordWindow.loadFile(path.join(__dirname, 'SubWindows', 'edit_record.html'));
+
+    editRecordWindow.on('closed', () => {
+      editRecordWindow = null;
+    });
+
+    editRecordWindow.once('ready-to-show', () => {
+      editRecordWindow.webContents.send('edit-record', { index, record });
+      editRecordWindow.show();
+    });
+  } else {
+    editRecordWindow.focus();
+  }
+}
+
+function openTodoEditWindow(index, todo) {
+  if (!editTodoWindow) {
+    editTodoWindow = new BrowserWindow({
+      parent: mainWindow,
+      modal: true,
+      show: false,
+      frame: false,
+      width: 400,
+      height: 300,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+      },
+    });
+
+    editTodoWindow.loadFile(path.join(__dirname, 'SubWindows', 'edit_todo.html'));
+
+    editTodoWindow.on('closed', () => {
+      editTodoWindow = null;
+    });
+
+    editTodoWindow.once('ready-to-show', () => {
+      editTodoWindow.webContents.send('edit-todo', { index, todo });
+      editTodoWindow.show();
+    });
+  } else {
+    editTodoWindow.focus();
+  }
+}
+
+ipcMain.on('delete-item', (event, { type, index }) => {
+  // console.log('删除数据:', type, index);
+  deleteData(type, index);
+  mainWindow.webContents.send('item-deleted');
+});
+
+ipcMain.on('request-data', () => {
+  sendDataToRenderer();
+});
+
+ipcMain.on('save-record', (event, record) => {
+  console.log('保存记录:', record);
+  saveData({ record });
+  sendDataToRenderer(); // 保存后更新数据
+});
+
+ipcMain.on('save-todo', (event, todo) => {
+  console.log('保存待办:', todo);
+  saveData({ todo });
+  sendDataToRenderer(); // 保存后更新数据
+});
+
+ipcMain.on('open-add-todo-window', () => {
+  createAddTodoWindow();
+});
+
+ipcMain.on('close-edit-todo-window', () => {
+  if (editTodoWindow) {
+    editTodoWindow.close();
+  }
+});
+
+ipcMain.on('close-edit-record-window', () => {
+  if (editRecordWindow) {
+    editRecordWindow.close();
+  }
+});
+
+ipcMain.on('close-add-todo-window', () => {
+  if (addTodoWindow) {
+    addTodoWindow.close();
+  }
 });
 
 ipcMain.on('open-add-record-window', () => {
@@ -214,5 +400,6 @@ ipcMain.on('move-window', (event, dx, dy) => {
 });
 
 ipcMain.on('close-window', () => {
-  mainWindow.close();
+  // mainWindow.close();
+  mainWindow.hide();
 });

@@ -11,7 +11,6 @@ const todayDate = `${year}-${month}-${day}`;
 document.getElementById('date').value = todayDate;
 
 document.getElementById('cancelButton').addEventListener('click', () => {
-    // 发送 IPC 消息给主进程，请求关闭子窗口
     ipcRenderer.send('close-add-record-window');
 });
 
