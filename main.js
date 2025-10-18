@@ -10,10 +10,94 @@ let addTodoWindow;
 let editRecordWindow;
 let editTodoWindow;
 let tray;
+// 初始化数据结构
+let defaultData = {
+  records: [],
+  todos: [],
+  goals: [
+    { id: 'goal1', name: '目标1' }
+  ]
+};
+
+// 获取所有目标
+function getGoals() {
+  let data = { goals: [] };
+  if (fs.existsSync(dataFilePath)) {
+    try {
+      const dataContent = fs.readFileSync(dataFilePath, 'utf8');
+      data = JSON.parse(dataContent);
+    } catch (error) {
+      console.error('解析数据文件时出错:', error);
+    }
+  }
+  return data.goals || [];
+}
+
+// 添加新目标
+function addGoal(goalName) {
+  let data = defaultData;
+  if (fs.existsSync(dataFilePath)) {
+    try {
+      const dataContent = fs.readFileSync(dataFilePath, 'utf8');
+      data = JSON.parse(dataContent);
+    } catch (error) {
+      console.error('解析数据文件时出错:', error);
+    }
+  }
+
+  const newGoal = {
+    id: `goal${data.goals.length + 1}`,
+    name: goalName
+  };
+
+  data.goals.push(newGoal);
+
+  try {
+    fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf8');
+    return newGoal;
+  } catch (error) {
+    console.error('写入数据文件时出错:', error);
+    return null;
+  }
+}
+
+// 删除目标
+function deleteGoal(goalId) {
+  let data = defaultData;
+  if (fs.existsSync(dataFilePath)) {
+    try {
+      const dataContent = fs.readFileSync(dataFilePath, 'utf8');
+      data = JSON.parse(dataContent);
+    } catch (error) {
+      console.error('解析数据文件时出错:', error);
+    }
+  }
+
+  const index = data.goals.findIndex(g => g.id === goalId);
+  if (index >= 0) {
+    data.goals.splice(index, 1);
+    
+    // 更新关联记录的目标为"无"
+    data.records.forEach(record => {
+      if (record.goal === goalId) {
+        record.goal = '';
+      }
+    });
+
+    try {
+      fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf8');
+      return true;
+    } catch (error) {
+      console.error('写入数据文件时出错:', error);
+    }
+  }
+  return false;
+}
 
 function updateData(type, index, item) {
   console.log('尝试更新数据', type);
   console.log('index:', index);
+  console.log('item:', item);
   let data = { records: [], todos: [] };
   if (fs.existsSync(dataFilePath)) {
     try {
@@ -44,7 +128,7 @@ function updateData(type, index, item) {
 
 // 读取记录数据并发送到渲染进程
 function sendDataToRenderer() {
-  let data = { records: [], todos: [] };
+  let data = defaultData;
   if (fs.existsSync(dataFilePath)) {
     try {
       const dataContent = fs.readFileSync(dataFilePath, 'utf8');
@@ -104,8 +188,8 @@ function deleteData(type, index) {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 740,
-    height: 480,
+    width: 836,
+    height: 549,
     frame: false,
     webPreferences: {
       // preload: path.join(__dirname, 'preload.js'),
@@ -173,12 +257,14 @@ function createWindow() {
   mainWindow.webContents.on('did-finish-load', () => {
     sendDataToRenderer();
   });
+
 }
+
 
 function createAddRecordWindow() {
   addRecordWindow = new BrowserWindow({
     width: 400,
-    height: 300,
+    height: 385,
     parent: mainWindow,
     modal: true,
     frame: false,
@@ -212,7 +298,7 @@ function createTray() {
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Show', click: () => {
+      label: '显示/隐藏', click: () => {
         if (mainWindow.isVisible()) {
           mainWindow.hide();
         } else {
@@ -221,7 +307,7 @@ function createTray() {
       }
     },
     {
-      label: 'Quit', click: () => {
+      label: '退出', click: () => {
         app.isQuitting = true;
         app.quit();
       }
@@ -231,47 +317,6 @@ function createTray() {
   tray.setContextMenu(contextMenu);
 }
 
-app.whenReady().then(() => {
-  createWindow();
-  createTray();
-  // 功能做完前先不管托盘
-  
-});
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
-});
-
-ipcMain.on('update-record', (event, { index, record }) => {
-  // console.log('index:', index);
-  updateData('record', index, record);
-  mainWindow.webContents.send('item-deleted'); // 通知渲染进程数据已更新
-});
-
-ipcMain.on('update-todo', (event, { index, todo }) => {
-  updateData('todo', index, todo);
-  mainWindow.webContents.send('item-deleted'); // 通知渲染进程数据已更新
-});
-
-ipcMain.on('open-record-edit-window', (event, { index, record }) => {
-  // console.log('index:', index);
-  openRecordEditWindow(index, record);
-});
-
-ipcMain.on('open-todo-edit-window', (event, { index, todo }) => {
-  openTodoEditWindow(index, todo);
-});
-
-// ipcMain.on('say-index')
-
 function openRecordEditWindow(index, record) {
   if (!editRecordWindow) {
     editRecordWindow = new BrowserWindow({
@@ -280,7 +325,7 @@ function openRecordEditWindow(index, record) {
       show: false,
       frame: false,
       width: 400,
-      height: 300,
+      height: 385,
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
@@ -331,6 +376,96 @@ function openTodoEditWindow(index, todo) {
     editTodoWindow.focus();
   }
 }
+
+app.whenReady().then(() => {
+  createWindow();
+  createTray();
+  // 功能做完前先不管托盘
+  
+});
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+
+// 目标相关IPC处理
+ipcMain.on('get-goals', (event) => {
+  event.reply('receive-goals', getGoals());
+});
+
+ipcMain.on('add-goal', (event, goalName) => {
+  const newGoal = addGoal(goalName);
+  event.reply('add-goal-result', newGoal);
+});
+
+ipcMain.on('delete-goal-by-name', (event, goalName) => {
+  const success = deleteGoalByName(goalName); // 需要实现这个函数
+  event.reply('delete-goal-result', success);
+});
+
+// 新增根据名称删除目标的函数
+function deleteGoalByName(goalName) {
+  let data = defaultData;
+  if (fs.existsSync(dataFilePath)) {
+    try {
+      const dataContent = fs.readFileSync(dataFilePath, 'utf8');
+      data = JSON.parse(dataContent);
+    } catch (error) {
+      console.error('解析数据文件时出错:', error);
+      return false;
+    }
+  }
+
+  const index = data.goals.findIndex(g => g.name === goalName);
+  if (index >= 0) {
+    const goalId = data.goals[index].id;
+    data.goals.splice(index, 1);
+    
+    // 更新关联记录的目标为"无"
+    data.records.forEach(record => {
+      if (record.goal === goalId) {
+        record.goal = '';
+      }
+    });
+
+    try {
+      fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf8');
+      return true;
+    } catch (error) {
+      console.error('写入数据文件时出错:', error);
+    }
+  }
+  return false;
+}
+
+ipcMain.on('update-record', (event, { index, record }) => {
+  // console.log('index:', index);
+  updateData('record', index, record);
+  mainWindow.webContents.send('item-deleted'); // 通知渲染进程数据已更新
+});
+
+ipcMain.on('update-todo', (event, { index, todo }) => {
+  updateData('todo', index, todo);
+  mainWindow.webContents.send('item-deleted'); // 通知渲染进程数据已更新
+});
+
+ipcMain.on('open-record-edit-window', (event, { index, record }) => {
+  // console.log('index:', index);
+  openRecordEditWindow(index, record);
+});
+
+ipcMain.on('open-todo-edit-window', (event, { index, todo }) => {
+  openTodoEditWindow(index, todo);
+});
+
 
 ipcMain.on('delete-item', (event, { type, index }) => {
   // console.log('删除数据:', type, index);

@@ -13,15 +13,15 @@
     <h2 class="unselectable">LooQ-打卡与提醒</h2>
     <div id="control">
       <button class="unselectable">设置</button>
-      <button id="close-button" class="unselectable">退出</button>
+      <button id="close-button" class="unselectable">隐藏至托盘</button>
     </div>
   </div>
 
   <div class="hcontainer full-flex">
     <div class="column vcontainer" id="left-column">
       
-      <div class="full-flex">
-        <div class="title-bar-small">
+      <div class="fixed-height">
+        <div class="title-bar-small" >
           <h2 class="unselectable">练习记录</h2>
           <div>
             <!-- <button>展开</button> -->
@@ -29,12 +29,12 @@
           </div>
         </div>
         <hr>
-        <div>
+        <div class="record-list-container">
           <ul id="recordList"></ul>
         </div>
       </div>
       <div class="divider"></div>
-      <div class="full-flex">
+      <div class="fixed-height">
         <div class="title-bar-small">
           <h2 class="unselectable">活跃图</h2>
           <div>
@@ -50,7 +50,7 @@
     </div>
 
     <div class="column" id="right-column">
-      <div>
+      <div class="fixed-height">
         <div class="title-bar-small">
           <h2 class="unselectable">待办</h2>
           <div>
@@ -59,7 +59,7 @@
           </div>
         </div>
         <hr>
-        <div>
+        <div class="todo-list-container">
           <ul id="todoList"></ul>
         </div>
       </div>

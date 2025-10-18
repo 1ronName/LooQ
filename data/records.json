@@ -1,33 +1,57 @@
 {
   "records": [
     {
-      "goal": "new",
+      "goal": "无",
       "content": "继续凑数",
       "date": "2025-10-17"
     },
     {
-      "goal": "goal1",
+      "goal": "无",
       "content": "aaa",
       "date": "2025-10-03"
     },
     {
-      "goal": "goal2",
-      "content": "1",
-      "date": "2025-10-17"
+      "goal": "无",
+      "content": "3",
+      "date": "2025-10-18"
+    },
+    {
+      "goal": "程序设计",
+      "content": "长文本测试长文本测试长文本测试长文本测试长文本测试长文本测试longlonglonglonglonglong长文本测试长文本测试长文本测试长文本测试longlonglonglonglonglong啊啊啊啊啊啊啊啊long",
+      "date": "2025-10-18"
+    },
+    {
+      "goal": "美术设计",
+      "content": "测试内容1",
+      "date": "2025-10-20"
     }
   ],
   "todos": [
     {
       "content": "待办1",
-      "date": "2025-10-17"
+      "date": "2025-10-17 13:30"
     },
     {
       "content": "待办2",
-      "date": "2025-10-17"
+      "date": "2025-10-17 13:30"
+    },
+    {
+      "content": "第一件事",
+      "date": "2025-10-01 13:30"
     },
     {
       "content": "某比赛开题",
-      "date": "2025-10-20"
+      "date": "2025-10-20 13:30"
+    },
+    {
+      "content": "20",
+      "date": "2025-10-18 13:30"
+    }
+  ],
+  "goals": [
+    {
+      "id": "goal1",
+      "name": "美术设计"
     }
   ]
 }

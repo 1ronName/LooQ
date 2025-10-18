@@ -10,19 +10,21 @@
   <div id="top" class="title-bar">
     <h2 class="unselectable">添加待办</h2>
   </div>
-  <form id="addTodoForm">
-    <div class="full-flex">
-    <label for="content">内容:</label>
-    <input type="text" id="content" name="content" required><br><br>
-    </div>
-    <div class="full-flex">
-    <label for="date">日期:</label>
-    <input type="date" id="date" name="date" required><br><br>
+
+  <form id="addTodoForm" class="styled-form">
+    <div class="form-group">
+      <label for="content">内容</label>
+      <input type="text" id="content" name="content" required placeholder="输入待办事项内容">
     </div>
     
-    <div class="buttons-box">
-      <button type="button" id="cancelButton">取消</button>
-      <button type="submit">确认</button>
+    <div class="form-group">
+      <label for="dateTime">时间</label>
+      <input type="datetime-local" id="dateTime" name="dateTime" required>
+    </div>
+    
+    <div class="form-actions">
+      <button type="button" id="cancelButton" class="btn secondary">取消</button>
+      <button type="submit" class="btn primary">确认</button>
     </div>
   </form>
   

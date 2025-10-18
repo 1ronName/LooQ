@@ -4,9 +4,118 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  
+  overflow: hidden;
   width: 100%;
   height: 100%;
+}
+
+/* 表单基础样式 */
+.styled-form {
+  max-width: 500px;
+  margin: 0 auto;
+  /* padding: 20px; */
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 表单组样式 */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* 标签样式 */
+.styled-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+/* 输入框样式 */
+.form-select,
+.styled-form input[type="text"],
+.styled-form input[type="date"],
+.styled-form input[type="datetime-local"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.form-select:focus,
+.styled-form input[type="text"]:focus,
+.styled-form input[type="date"]:focus,
+.styled-form input[type="datetime-local"]:focus {
+  border-color: #2d90fa;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(45, 144, 250, 0.2);
+}
+
+/* 日期时间选择器特定样式 */
+.styled-form input[type="date"],
+.styled-form input[type="datetime-local"] {
+  /* 统一各浏览器样式 */
+  appearance: none;
+  background-color: white;
+  padding: 10px 12px;
+}
+
+/* 按钮容器 */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* 按钮样式 */
+.btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn.primary {
+  background-color: #2d90fa;
+  color: white;
+}
+
+.btn.primary:hover {
+  background-color: #1a7de9;
+}
+
+.btn.secondary {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.btn.secondary:hover {
+  background-color: #e0e0e0;
+}
+
+/* 响应式调整 */
+@media (max-width: 600px) {
+  .styled-form {
+    padding: 15px;
+  }
+  
+  .form-actions {
+    flex-direction: row;
+  }
+  
+  .btn {
+    width: 100%;
+  }
 }
 
 ul {
@@ -15,12 +124,97 @@ ul {
 }
 
 li {
-  display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid #ccc;
   position: relative;
+  flex-wrap: wrap; /* 允许内容换行 */
+}
+
+/* 信息方框基础样式 */
+.info-box {
+  display: inline-block;
+  padding: 2px 6px;
+  margin-right: 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* 日期方框特定样式 */
+.date-box {
+  background-color: #e3f2fd;
+  border: 1px solid #bbdefb;
+  color: #1976d2;
+}
+
+/* 目标方框特定样式 */
+.goal-box {
+  background-color: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  color: #388e3c;
+}
+
+/* 内容文本样式 */
+.content-text {
+  display: inline;
+  margin-left: 5px;
+  white-space: normal; /* 允许换行 */
+}
+
+/* 目标选择容器 */
+.goal-select-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* 带操作按钮的下拉框 */
+.form-select.with-actions {
+  padding-right: 60px; /* 为按钮留出空间 */
+}
+
+/* 目标操作按钮组 */
+.goal-actions {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+}
+
+/* 图标按钮样式 */
+.btn-icon {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:hover {
+  background-color: rgba(45, 144, 250, 0.1);
+}
+
+.btn-icon svg {
+  fill: #555;
+}
+
+.btn-icon:hover svg {
+  fill: #2d90fa;
+}
+
+.btn-icon:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-icon:disabled:hover svg {
+  fill: #555;
 }
 
 .button-container {
@@ -38,6 +232,7 @@ li {
   padding: 5px 10px;
   cursor: pointer;
   margin-left: 10px;
+  user-select: none; /* 设置文字不可选中 */
 }
 
 .delete-button {
@@ -75,7 +270,15 @@ li:hover .button-container {
 
 .divider {
   border-bottom: 2px solid #007BFF;
-  margin: 5px 0;
+  margin: 2px 0;
+}
+
+hr {
+  height: 1px; /* 明确高度 */
+  border: 0; /* 移除默认边框 */
+  background: #9aabbd; /* 使用你的主题色 */
+  margin: 0; /* 保持上下间距 */
+  width: 100%; /* 确保宽度完整 */
 }
 
 .title-bar-small div button{
@@ -86,6 +289,30 @@ li:hover .button-container {
 .title-bar-small div button:hover {
   background-color: #cce2facb;
   color: #1d1d1d;
+}
+
+.fixed-height {
+  height: 100%; /* 关键：确保父容器有明确高度 */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* 防止内容溢出 */
+}
+
+.record-list-container, .todo-list-container {
+  flex: 1; /* 占据所有剩余空间 */
+  min-height: 0; /* 关键：允许内容收缩 */
+  overflow-y: auto; /* 垂直滚动 */
+  position: relative; /* 为内部绝对定位元素提供参照 */
+}
+
+#recordList, #todoList{
+  position: absolute; /* 绝对定位确保正确计算滚动区域 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto; /* 双重保险 */
+  padding: 0px; /* 可选内边距 */
 }
 
 #addRecordForm, #editRecordForm {
@@ -118,6 +345,7 @@ li:hover .button-container {
   flex: 1;
   background-color: #ffffff00;
   color: #1d1d1d;
+  user-select: none; /* 设置文字不可选中 */
 }
 
 .buttons-box button:hover {
@@ -151,12 +379,14 @@ li:hover .button-container {
 
 #left-column {
   flex: 2;
+  overflow: hidden;
   background-color: #f0f0f0;
 }
 
 #right-column {
   flex: 1;
-  background-color: #e0e0e0;
+  overflow: hidden;
+  background-color: #f8eedf;
 }
 
 button {
@@ -167,6 +397,7 @@ button {
   color: #fff;
   border: none;
   border-radius: 5px;
+  user-select: none; /* 设置文字不可选中 */
 }
 
 button:hover {

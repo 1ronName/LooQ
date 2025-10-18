@@ -14,10 +14,37 @@ ipcRenderer.on('receive-data', (event, data) => {
   recordList.innerHTML = '';
   todoList.innerHTML = '';
 
+  // 对记录数组按日期降序排序（最新的在前）
+  const sortedRecords = [...data.records].sort((a, b) => {
+    return new Date(b.date) - new Date(a.date); // 降序排列
+    // 如需升序排列（旧的在前）： return new Date(a.date) - new Date(b.date);
+  });
+
+  // 对待办数组按日期降序排序
+  const sortedTodos = [...data.todos].sort((a, b) => {
+    return new Date(a.date) - new Date(b.date);
+  });
+
   // 遍历记录数组并创建列表项
-  data.records.forEach((record, index) => {
+  sortedRecords.forEach((record, index) => {
     const listItem = document.createElement('li');
-    listItem.textContent = `${record.date}[${record.goal}]${record.content}`;
+    // 创建包含方框样式的元素
+    const dateSpan = document.createElement('span');
+    dateSpan.className = 'info-box date-box';
+    dateSpan.textContent = formatDate(record.date);
+  
+    const goalSpan = document.createElement('span');
+    goalSpan.className = 'info-box goal-box';
+    goalSpan.textContent = `${record.goal}`;
+    
+    const contentSpan = document.createElement('span');
+    contentSpan.className = 'content-text';
+    contentSpan.textContent = record.content;
+    
+    // 将元素添加到列表项
+    listItem.appendChild(dateSpan);
+    listItem.appendChild(goalSpan);
+    listItem.appendChild(contentSpan);
 
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'button-container';
@@ -26,14 +53,19 @@ ipcRenderer.on('receive-data', (event, data) => {
     editButton.textContent = '编辑';
     editButton.className='edit-button'
     editButton.addEventListener('click', () => {
-      ipcRenderer.send('open-record-edit-window', { index, record });
+      ipcRenderer.send('open-record-edit-window', { 
+        index: data.records.findIndex(r => r.date === record.date && r.content === record.content), 
+        record 
+      });
     });
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = '删除';
     deleteButton.className='delete-button'
     deleteButton.addEventListener('click', () => {
-      confirmDelete('record', index);
+      confirmDelete('record', 
+        data.records.findIndex(r => r.date === record.date && r.content === record.content)
+      );
     });
 
     buttonContainer.appendChild(editButton);
@@ -43,9 +75,19 @@ ipcRenderer.on('receive-data', (event, data) => {
   });
 
   // 遍历待办数组并创建列表项
-  data.todos.forEach((todo, index) => {
+  sortedTodos.forEach((todo, index) => {
     const listItem = document.createElement('li');
-    listItem.textContent = `${todo.date}-${todo.content}`;
+
+    const dateTimeSpan = document.createElement('span');
+    dateTimeSpan.className = 'info-box date-box';
+    dateTimeSpan.textContent = formatDate(todo.date);
+  
+    const contentSpan = document.createElement('span');
+    contentSpan.className = 'content-text';
+    contentSpan.textContent = todo.content;
+    
+    listItem.appendChild(dateTimeSpan);
+    listItem.appendChild(contentSpan);
 
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'button-container';
@@ -54,14 +96,19 @@ ipcRenderer.on('receive-data', (event, data) => {
     editButton.textContent = '编辑';
     editButton.className='edit-button'
     editButton.addEventListener('click', () => {
-      ipcRenderer.send('open-todo-edit-window', { index, todo });
+      ipcRenderer.send('open-todo-edit-window', { 
+        index: data.todos.findIndex(t => t.date === todo.date && t.content === todo.content), 
+        todo 
+      });
     });
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = '删除';
     deleteButton.className='delete-button'
     deleteButton.addEventListener('click', () => {
-      confirmDelete('todo', index);
+      confirmDelete('todo', 
+        data.todos.findIndex(t => t.date === todo.date && t.content === todo.content)
+      );
     });
 
     buttonContainer.appendChild(editButton);
@@ -84,6 +131,24 @@ function confirmDelete(type, index) {
   if (result) {
     ipcRenderer.send('delete-item', { type, index });
   }
+}
+
+// 新增日期格式化函数
+function formatDate(dateString) {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    
+    // 分割日期和时间部分
+    const [datePart, timePart] = dateString.split(' ');
+    const [year, month, day] = datePart.split('-');
+    
+    // 如果是今年，只显示月-日；否则显示完整年月日
+    const formattedDate = parseInt(year) === currentYear
+        ? `${month}-${day}`
+        : `${year}-${month}-${day}`;
+    
+    // 如果有时间部分，附加时间
+    return timePart ? `${formattedDate} ${timePart}` : formattedDate;
 }
 
 ipcRenderer.on('item-deleted', () => {

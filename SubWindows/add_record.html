@@ -7,35 +7,37 @@
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-  <div id="top" class="title-bar">
+  <div class="title-bar">
     <h2 class="unselectable">添加记录</h2>
   </div>
-  <form id="addRecordForm">
-    <div class="full-flex">
-    <label for="goal">所属目标:</label>
-    <select id="goal" name="goal" required>
-      <option value="">无</option>
-      <option value="goal1">目标1</option>
-      <option value="goal2">目标2</option>
-      <option value="goal3">目标3</option>
-      <option value="new">新建</option>
-    </select><br><br>
-    </div>
+  
+  <form id="addRecordForm" class="styled-form">
+      <div class="form-group">
+        <label for="goal" class="form-label">所属目标</label>
+        <select id="goal" name="goal" class="form-select" required>
+          <option value="">无</option>
+          <option value="goal1">目标1</option>
+          <option value="goal2">目标2</option>
+          <option value="goal3">目标3</option>
+          <option value="new">新建</option>
+        </select>
+      </div>
 
-    <div class="full-flex">
-    <label for="content">内容:</label>
-    <input type="text" id="content" name="content" required><br><br>
-    </div>
-    <div class="full-flex">
-    <label for="date">日期:</label>
-    <input type="date" id="date" name="date" required><br><br>
-    </div>
-    
-    <div class="buttons-box">
-      <button type="button" id="cancelButton">取消</button>
-      <button type="submit">确认</button>
-    </div>
-  </form>
+      <div class="form-group">
+        <label for="content" class="form-label">内容</label>
+        <input type="text" id="content" name="content" class="form-input" required placeholder="输入记录内容">
+      </div>
+      
+      <div class="form-group">
+        <label for="date" class="form-label">日期</label>
+        <input type="date" id="date" name="date" class="form-input" required>
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" id="cancelButton" class="btn secondary">取消</button>
+        <button type="submit" class="btn primary">确认</button>
+      </div>
+    </form>
   
   <script src="add_record.js"></script>
 </body>
