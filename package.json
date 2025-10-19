@@ -4,13 +4,27 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "npx @electron/packager . LooQ-打卡与提醒 --out=dist --overwrite --platform=win32 --arch=x64",
+    "build": "electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "top.ironname.looq",
+    "productName": "LooQ-打卡与提醒",
+    "directories": {
+      "output": "dist"
+    }
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "electron": "^38.2.2"
+    "electron": "^38.2.2",
+    "electron-builder": "^26.0.12",
+    "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "auto-launch": "^5.0.6"
   }
 }

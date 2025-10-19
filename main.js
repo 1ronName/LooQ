@@ -4,15 +4,35 @@ const fs = require('fs');
 const { log } = require('console');
 const dataFilePath = path.join(__dirname, 'data', 'records.json');
 
-let mainWindow;
-let addRecordWindow;
-let addTodoWindow;
-let editRecordWindow;
-let editTodoWindow;
-let goalManageWindow;
-let addGoalWindow;
-let editGoalWindow;
-let tray;
+//--------------自动启动设置相关----------------//
+const AutoLaunch = require('auto-launch');
+
+// 创建自动启动实例
+const appLauncher = new AutoLaunch({
+  name: 'LooQ-打卡与提醒',
+  path: app.getPath('exe')
+});
+
+// 获取自动启动设置
+ipcMain.handle('get-auto-start-setting', async () => {
+  return await appLauncher.isEnabled();
+});
+
+// 设置自动启动
+ipcMain.on('set-auto-start-setting', async (event, enabled) => {
+  try {
+    if (enabled) {
+      await appLauncher.enable();
+    } else {
+      await appLauncher.disable();
+    }
+    console.log('自动启动设置已更新:', enabled);
+  } catch (error) {
+    console.error('更新自动启动设置失败:', error);
+  }
+});
+
+//--------------数据存储更新相关----------------//
 // 初始化数据结构
 let dataBuffer = {
   records: [],
@@ -140,6 +160,17 @@ function deleteData(type, index) {
   fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf8');
 }
 
+//--------------创建窗口相关----------------//
+let mainWindow;
+let addRecordWindow;
+let addTodoWindow;
+let editRecordWindow;
+let editTodoWindow;
+let goalManageWindow;
+let addGoalWindow;
+let editGoalWindow;
+let tray;
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 836,
@@ -213,6 +244,15 @@ function createWindow() {
   });
 
 }
+
+function changeSettingsWindow(){
+  mainWindow.loadFile('settings.html');
+}
+
+function changeMainWindow(){
+  mainWindow.loadFile('index.html');
+}
+
 
 function createGoalManageWindow(){
   goalManageWindow = new BrowserWindow({
@@ -424,6 +464,14 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+ipcMain.on('change-settings-window', () => {
+  changeSettingsWindow();
+});
+
+ipcMain.on('change-main-window', () => {
+  changeMainWindow();
 });
 
 ipcMain.on('open-add-goal-window', () => {

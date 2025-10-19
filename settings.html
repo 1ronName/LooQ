@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body id="mainbody">
+  <div id="top" class="title-bar">
+    <h2 class="unselectable">LooQ-打卡与提醒</h2>
+    <div id="control">
+      <button id="back-button" class="unselectable">返回主页</button>
+    </div>
+  </div>
+
+  <div class="hcontainer full-flex">
+    <div class="column" id="right-column">
+      <div class="settings-container">
+        <h3>应用设置</h3>
+        <div class="setting-item">
+          <label class="checkbox-container">
+            <input type="checkbox" id="auto-start-checkbox">
+            <span class="checkmark"></span>
+            开机自动启动
+          </label>
+          <p class="setting-description">启用后应用将在系统启动时自动运行</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="settings.js"></script>
+</body>
+</html>

@@ -159,6 +159,10 @@ ipcRenderer.on('item-deleted', () => {
   ipcRenderer.send('request-data');
 });
 
+document.getElementById('settings-button').addEventListener('click', () => {
+  ipcRenderer.send('change-settings-window');
+});
+
 document.getElementById('goal-manage-button').addEventListener('click', () => {
   ipcRenderer.send('open-goal-manage-window');
 });
