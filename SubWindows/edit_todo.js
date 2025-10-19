@@ -21,9 +21,12 @@ ipcRenderer.on('edit-todo', (event, { index, todo }) => {
 // 处理表单提交
 editTodoForm.addEventListener('submit', (e) => {
   e.preventDefault();
+
+  const formattedDateTime = formatDateTime(dateInput.value);
+
   const updatedTodo = {
     content: contentInput.value,
-    date: dateInput.value,
+    date: formattedDateTime,
   };
 
   // 发送更新后的记录数据到主进程
@@ -35,3 +38,10 @@ editTodoForm.addEventListener('submit', (e) => {
 cancelButton.addEventListener('click', () => {
   ipcRenderer.send('close-edit-todo-window');
 });
+
+// 格式化日期时间函数
+function formatDateTime(dateTimeString) {
+    const [datePart, timePart] = dateTimeString.split('T');
+    const [hours, minutes] = timePart.split(':');
+    return `${datePart} ${hours}:${minutes}`;
+}

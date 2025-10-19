@@ -1,29 +1,48 @@
 {
+  "goals": [
+    {
+      "id": "goal0",
+      "name": "日常"
+    },
+    {
+      "name": "研究游戏",
+      "id": "18202510191230"
+    },
+    {
+      "name": "编程",
+      "id": "00202510192003"
+    }
+  ],
   "records": [
     {
-      "goal": "无",
+      "goal": "goal0",
       "content": "继续凑数",
       "date": "2025-10-17"
     },
     {
-      "goal": "无",
+      "goal": "goal0",
       "content": "aaa",
       "date": "2025-10-03"
     },
     {
-      "goal": "无",
+      "goal": "goal0",
       "content": "3",
       "date": "2025-10-18"
     },
     {
-      "goal": "程序设计",
-      "content": "长文本测试长文本测试长文本测试长文本测试长文本测试长文本测试longlonglonglonglonglong长文本测试长文本测试长文本测试长文本测试longlonglonglonglonglong啊啊啊啊啊啊啊啊long",
+      "goal": "00202510192003",
+      "content": "长文本测试长文本测试长文本测试长文本测试长文本测试长文本测试longlonglonglonglonglong长文本测试长文本测试长文本测试长文本测试longlonglonglonglonglong啊long",
       "date": "2025-10-18"
     },
     {
-      "goal": "美术设计",
-      "content": "测试内容1",
-      "date": "2025-10-20"
+      "goal": "18202510191230",
+      "content": "玩p5r",
+      "date": "2025-10-19"
+    },
+    {
+      "goal": "18202510191230",
+      "content": "Until Then",
+      "date": "2025-10-19"
     }
   ],
   "todos": [
@@ -44,14 +63,8 @@
       "date": "2025-10-20 13:30"
     },
     {
-      "content": "20",
+      "content": "占位符",
       "date": "2025-10-18 13:30"
-    }
-  ],
-  "goals": [
-    {
-      "id": "goal1",
-      "name": "美术设计"
     }
   ]
 }

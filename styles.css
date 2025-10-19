@@ -298,14 +298,16 @@ hr {
   overflow: hidden; /* 防止内容溢出 */
 }
 
-.record-list-container, .todo-list-container {
+.goal-list-container, 
+.record-list-container, 
+.todo-list-container {
   flex: 1; /* 占据所有剩余空间 */
   min-height: 0; /* 关键：允许内容收缩 */
   overflow-y: auto; /* 垂直滚动 */
   position: relative; /* 为内部绝对定位元素提供参照 */
 }
 
-#recordList, #todoList{
+#recordList, #todoList, #goalList{
   position: absolute; /* 绝对定位确保正确计算滚动区域 */
   top: 0;
   left: 0;

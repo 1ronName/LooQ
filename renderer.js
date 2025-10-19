@@ -1,6 +1,5 @@
-const { ipcRenderer, dialog } = require('electron');
+const { ipcRenderer} = require('electron');
 const path = require('path');
-const recordsPath = path.join(__dirname, '..', 'data', 'records.json');
 
 // 获取记录列表和待办列表元素
 const recordList = document.getElementById('recordList');
@@ -25,6 +24,8 @@ ipcRenderer.on('receive-data', (event, data) => {
     return new Date(a.date) - new Date(b.date);
   });
 
+  const goals = [...data.goals];
+
   // 遍历记录数组并创建列表项
   sortedRecords.forEach((record, index) => {
     const listItem = document.createElement('li');
@@ -34,8 +35,10 @@ ipcRenderer.on('receive-data', (event, data) => {
     dateSpan.textContent = formatDate(record.date);
   
     const goalSpan = document.createElement('span');
+    // 使用 find 方法查找具有特定 id 的对象
+    const goal = goals.find(goal => goal.id === record.goal);
     goalSpan.className = 'info-box goal-box';
-    goalSpan.textContent = `${record.goal}`;
+    goalSpan.textContent = `${goal.name}`;
     
     const contentSpan = document.createElement('span');
     contentSpan.className = 'content-text';
@@ -154,6 +157,10 @@ function formatDate(dateString) {
 ipcRenderer.on('item-deleted', () => {
   // 请求主进程重新发送数据
   ipcRenderer.send('request-data');
+});
+
+document.getElementById('goal-manage-button').addEventListener('click', () => {
+  ipcRenderer.send('open-goal-manage-window');
 });
 
 document.getElementById('addTodoButton').addEventListener('click', () => {
