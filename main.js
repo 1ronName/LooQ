@@ -411,6 +411,8 @@ function openRecordEditWindow(index, record, goals) {
     editRecordWindow.once('ready-to-show', () => {
       editRecordWindow.webContents.send('edit-record', { index, record, goals });
       editRecordWindow.show();
+      // console.log('修改项信息', record);
+      // console.log('goal列表', goals);
     });
   } else {
     editRecordWindow.focus();

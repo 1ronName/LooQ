@@ -5,10 +5,84 @@ const path = require('path');
 const recordList = document.getElementById('recordList');
 const todoList = document.getElementById('todoList');
 
+const container = document.querySelector('.activity-container');
+container.scrollLeft = container.scrollWidth;
+
+
+function renderActivityGraph(records) {
+  const graph = document.getElementById("activity-graph");
+  const monthLabels = document.getElementById("month-labels");
+  graph.innerHTML = '';
+  monthLabels.innerHTML = '';
+
+  const today = new Date();
+  const start = new Date(today.getFullYear(), 0, 1);
+  const end = new Date(today);
+  end.setDate(end.getDate());
+
+  // 统计
+  const dateMap = {};
+  records.forEach(record => {
+    const date = new Date(record.date);
+    if (date >= start && date <= end) {
+      const key = date.toISOString().split('T')[0];
+      dateMap[key] = (dateMap[key] || 0) + 1;
+    }
+  });
+
+  // 生成日期数组
+  const dates = [];
+  const temp = new Date(start);
+  while (temp <= end) {
+    dates.push(new Date(temp));
+    temp.setDate(temp.getDate() + 1);
+  }
+
+  // 计算周数（每列为一周）
+  const numWeeks = Math.ceil(dates.length / 7);
+
+  // 动态设置列数（保证 grid 与 monthLabels 对齐）
+  graph.style.gridTemplateColumns = `repeat(${numWeeks}, 12px)`;
+  monthLabels.style.gridTemplateColumns = `repeat(${numWeeks}, 12px)`;
+
+  const maxValue = Math.max(1, ...Object.values(dateMap));
+
+  // 月份标签：放在对应的列（以weekIndex为基准）
+  const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  let lastMonth = -1;
+  dates.forEach((d, i) => {
+    const weekIndex = Math.floor(i / 7);
+    const m = d.getMonth();
+    if (m !== lastMonth) {
+      const label = document.createElement("div");
+      label.className = 'month-label';
+      label.textContent = monthNames[m];
+      // 将 label 放到对应的列（gridColumn 从 1 开始）
+      label.style.gridColumnStart = (weekIndex + 1);
+      monthLabels.appendChild(label);
+      lastMonth = m;
+    }
+  });
+
+  // 绘制格子：顺序为日期顺序，CSS 的 grid-auto-flow: column 会按列装填
+  dates.forEach(d => {
+    const key = d.toISOString().split('T')[0];
+    const count = dateMap[key] || 0;
+    const level = count === 0 ? 0 : Math.ceil((count / maxValue) * 4);
+    const cell = document.createElement("div");
+    cell.classList.add("activity-cell");
+    if (level > 0) cell.dataset.level = level;
+    cell.title = `${key}：${count} 次`;
+    graph.appendChild(cell);
+  });
+}
+
 // 请求主进程发送数据
 ipcRenderer.send('request-data');
 
 ipcRenderer.on('receive-data', (event, data) => {
+  renderActivityGraph(data.records);
+  document.querySelector('.activity-container').scrollLeft = document.querySelector('.activity-container').scrollWidth;
   // 清空现有列表
   recordList.innerHTML = '';
   todoList.innerHTML = '';
